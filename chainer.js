@@ -108,9 +108,9 @@ window.Chainer = (function() {
     }
 
     , empty: function() {
-      var newObj = this.clone();
-      newObj.length = 0;
-      return newObj;
+      var ret = this.clone();
+      ret.length = 0;
+      return ret;
     }
 
     // utils
