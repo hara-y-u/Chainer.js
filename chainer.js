@@ -1,7 +1,6 @@
 /**
  * Chainer.js - Collection Processing with Chain Methods
- *   Author:  @yukihr
- *   License: MIT - http://www.opensource.org/licenses/mit-license
+ *  * License: [MIT](http://www.opensource.org/licenses/mit-license)
  */
 window.Chainer = (function() {
 
@@ -38,14 +37,14 @@ window.Chainer = (function() {
 
   Chainer.extend(Chainer, {
     /**
-      * If given value is Array-like object (collection), convert it to array,
+      * If given value is Array-like object, convert it to array,
       * else return [ value ].
       *
       *     @param {Whatever} value
       */
     makeArray: function( value ) {
       // algorithm basing jQuery.makeArray
-      var ret = [], class2type = {}, i
+      var ret = [], class2type = {}, i, l
       , classes = "Boolean Number String Function Array Date RegExp Object".split(" ")
       ;
 
@@ -71,19 +70,22 @@ window.Chainer = (function() {
            || t === "function"
            || t === "regexp"
            || isWindow(value)) {
+
           ret.push(value);
+
         } else {
+
           if(typeof value.length === 'number') {
-            for(i = value.length; i--;) {
+            for(i=0, l = value.length; i < l; i++) {
+              ret[i] = value[i];
+            }
+          } else {
+            for(i=0; value[i] !== undefined; i++) {
               ret[i] = value[i];
             }
           }
-          else {
-            i = 0;
-            while(value[i] !== undefined) {
-              ret[i] = value[i++];
-            }
-          }
+
+          ret.length = i;
 
         }
       }
