@@ -15,8 +15,8 @@ $(document).ready(function() {
   test('Chainer.makeArray', function() {
     var testdiv = document.getElementById('core-makearray-test');
     var divs = testdiv.getElementsByTagName('div');
-    ok(Chainer.makeArray(divs) instanceof Array);
-    equal(Chainer.makeArray(divs).length, 3);
+    ok(Chainer.makeArray(divs) instanceof Array, 'return value is Array instance');
+    equal(Chainer.makeArray(divs).length, 3, 'return value has length property with correct value');
   });
 
 
@@ -25,7 +25,13 @@ $(document).ready(function() {
   test('map', function() {
     var ch = new Chainer();
 
-    deepEqual(ch.start([1,2,3,4]).map(function(v,i) { return v + i; }).makeArray(), [1,3,5,7], 'use map function');
+    deepEqual(ch.start([1,2,3,4]).map(function(v,i) { return v + i; }).makeArray(), [1,3,5,7]);
+  });
+
+  test('filter', function() {
+    var ch = new Chainer();
+
+    deepEqual(ch.start([1,2,3,4]).filter(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
   });
 
 
