@@ -61,6 +61,11 @@ $(document).ready(function() {
     deepEqual(ch.start([false, false, false]).some(function(val, i) { return val; }), false, 'false');
   });
 
+  test('flatten', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([[1,2],[3,4],[5,6]]).flatten(), [1,2,3,4,5,6]);
+  });
+
 
   module('Extending');
 

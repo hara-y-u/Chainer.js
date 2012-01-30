@@ -258,6 +258,9 @@ window.Chainer = (function() {
     }
 
     , flatten: function() {
+      return this.reduce(function(prev, curr, i) {
+        return Chainer.merge(prev, curr);
+      }, []);
     }
 
     // recursive
