@@ -189,11 +189,11 @@ window.Chainer = (function() {
       return this.filter(callback, thisp);
     }
 
-    , reduce: function(callback, initial, thisp) {
-      var ret = initial;
+    , reduce: function(callback, initial) {
+      var ret = initial || this[0];
 
       this.each(function(val, idx, arr) {
-        ret = callback(ret, val, idx, arr, ret);
+        ret = callback(ret, val, idx, arr);
       });
 
       return ret;
