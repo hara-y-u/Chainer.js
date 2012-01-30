@@ -24,14 +24,23 @@ $(document).ready(function() {
 
   test('map', function() {
     var ch = new Chainer();
-
     deepEqual(ch.start([1,2,3,4]).map(function(v,i) { return v + i; }).makeArray(), [1,3,5,7]);
   });
 
   test('filter', function() {
     var ch = new Chainer();
-
     deepEqual(ch.start([1,2,3,4]).filter(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
+  });
+
+  test('select', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([1,2,3,4]).select(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
+  });
+
+  test('reduce', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([1,2,3,4]).reduce(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
+    deepEqual(ch.start([4,5,6,7]).reduce(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
   });
 
 

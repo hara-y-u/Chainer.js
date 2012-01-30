@@ -190,8 +190,8 @@ window.Chainer = (function() {
     }
 
     , reduce: function(callback, initial) {
-      var ret = initial || this[0];
-
+      var ret = initial || this.shift()
+      ;
       this.each(function(val, idx, arr) {
         ret = callback(ret, val, idx, arr);
       });
@@ -199,8 +199,7 @@ window.Chainer = (function() {
       return ret;
     }
 
-    , reduceRight: function(callback, initial, thisp) {
-      return this;
+    , reduceRight: function(callback, initial) {
     }
 
     , every: function(callback, thisp) {
