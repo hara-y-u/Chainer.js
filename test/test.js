@@ -13,7 +13,10 @@ $(document).ready(function() {
   });
 
   test('Chainer.makeArray', function() {
-    ok(Chainer.makeArray(document.getElementsByTagName('div')) instanceof Array);
+    var testdiv = document.getElementById('core-makearray-test');
+    var divs = testdiv.getElementsByTagName('div');
+    ok(Chainer.makeArray(divs) instanceof Array);
+    equal(Chainer.makeArray(divs).length, 3);
   });
 
 
