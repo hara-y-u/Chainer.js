@@ -37,14 +37,40 @@ window.Chainer = (function() {
 
   Chainer.extend(Chainer, {
     /**
+     * Merge two objects.
+     *
+     *     @param {Object} first First object to merge.
+     *     @param {Object} second Second object to merge.
+     */
+    merge: function(first, second) {
+      // algorithm basing jQuery.merge
+      var i = first.length,
+      j = 0;
+
+      if ( typeof second.length === "number" ) {
+        for ( var l = second.length; j < l; j++ ) {
+          first[ i++ ] = second[ j ];
+        }
+
+      } else {
+        while ( second[j] !== undefined ) {
+          first[ i++ ] = second[ j++ ];
+        }
+      }
+
+      first.length = i;
+
+      return first;
+    }
+    /**
       * If given value is Array-like object, convert it to array,
       * else return [ value ].
       *
       *     @param {Whatever} value
       */
-    makeArray: function( value ) {
+    , makeArray: function(value) {
       // algorithm basing jQuery.makeArray
-      var ret = [], class2type = {}, i, l
+      var ret = [], class2type = {}, i
       , classes = "Boolean Number String Function Array Date RegExp Object".split(" ")
       ;
 
@@ -74,19 +100,7 @@ window.Chainer = (function() {
           ret.push(value);
 
         } else {
-
-          if(typeof value.length === 'number') {
-            for(i=0, l = value.length; i < l; i++) {
-              ret[i] = value[i];
-            }
-          } else {
-            for(i=0; value[i] !== undefined; i++) {
-              ret[i] = value[i];
-            }
-          }
-
-          ret.length = i;
-
+          Chainer.merge(ret, value);
         }
       }
 
