@@ -138,12 +138,12 @@ window.Chainer = (function() {
 
     // basics
     , each: function(callback, thisp) {
-      var it = this.getIterator()
+      var i, l = this.length
       ;
-      while(it.hasNext()) {
+      for(i = 0; i < l; i++) {
         callback.call(thisp || this
-                      , it.next()
-                      , it.getIndex() - 1
+                      , this[i]
+                      , i
                       , this.makeArray()
                      );
       }
