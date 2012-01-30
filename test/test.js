@@ -20,7 +20,7 @@ $(document).ready(function() {
   });
 
 
-  module('Methods');
+  module('Basic Methods');
 
   test('map', function() {
     var ch = new Chainer();
@@ -41,6 +41,24 @@ $(document).ready(function() {
     var ch = new Chainer();
     deepEqual(ch.start([1,2,3,4]).reduce(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
     deepEqual(ch.start([4,5,6,7]).reduce(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
+  });
+
+  test('reduceRight', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([1,2,3,4]).reduceRight(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
+    deepEqual(ch.start([4,5,6,7]).reduceRight(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
+  });
+
+  test('every', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([true, true, true]).every(function(val, i) { return val; }), true, 'true');
+    deepEqual(ch.start([true, true, false]).every(function(val, i) { return val; }), false, 'false');
+  });
+
+  test('some', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([true, false, false]).some(function(val, i) { return val; }), true, 'true');
+    deepEqual(ch.start([false, false, false]).some(function(val, i) { return val; }), false, 'false');
   });
 
 

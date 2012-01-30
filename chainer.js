@@ -200,16 +200,47 @@ window.Chainer = (function() {
     }
 
     , reduceRight: function(callback, initial) {
+      var ret = initial || this.pop()
+      , arr = this.makeArray()
+      , l = this.length
+      ;
+      while(l--) {
+        ret = callback(ret, this[l], l, arr);
+      }
+
+      return ret;
     }
 
     , every: function(callback, thisp) {
-      this.each(function(val, idx, arr) {
-      });
-      return this;
+      var i, l = this.length
+      ;
+      for(i = 0; i < l; i++) {
+        if(!callback.call(thisp || this
+                         , this[i]
+                         , i
+                         , this.makeArray()
+                        )) {
+          return false;
+        }
+      }
+
+      return true;
     }
 
     , some: function(callback, thisp) {
-      return this;
+      var i, l = this.length
+      ;
+      for(i = 0; i < l; i++) {
+        if(callback.call(thisp || this
+                         , this[i]
+                         , i
+                         , this.makeArray()
+                        )) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     , flatten: function() {
