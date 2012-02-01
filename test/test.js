@@ -63,7 +63,12 @@ $(document).ready(function() {
 
   test('flatten', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([[1,2],[3,4],[5,6]]).flatten(), [1,2,3,4,5,6]);
+    deepEqual(ch.start([[1,2],[3,4],[5,6]]).flatten().makeArray(), [1,2,3,4,5,6]);
+  });
+
+  test('rmap', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([[1,2],[3,4,[5,6]]]).rmap(function(val, i) {return val+1;} ).makeArray(), [[2,3],[4,5,[6,7]]]);
   });
 
 

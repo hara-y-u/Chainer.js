@@ -4,7 +4,7 @@
  */
 window.Chainer = (function() {
 
-  var Chainer = function() {};
+  function Chainer() {}
 
   /**
    * Extend the Object with another Object's properties.
@@ -36,11 +36,12 @@ window.Chainer = (function() {
   };
 
   Chainer.extend(Chainer, {
+
     /**
-     * Merge two objects.
+     * Merge two arrays.
      *
-     *     @param {Object} first First object to merge.
-     *     @param {Object} second Second object to merge.
+     *     @param {Array} first First array to merge.
+     *     @param {Array} second Second array to merge.
      */
     merge: function(first, second) {
       // algorithm basing jQuery.merge
@@ -62,6 +63,7 @@ window.Chainer = (function() {
 
       return first;
     }
+
     /**
       * If given value is Array-like object, convert it to array,
       * else return [ value ].
@@ -258,25 +260,33 @@ window.Chainer = (function() {
     }
 
     , flatten: function() {
-      return this.reduce(function(prev, curr, i) {
+      var ret = this.empty();
+      return Chainer.extend(this.reduce(function(prev, curr, i) {
         return Chainer.merge(prev, curr);
-      }, []);
+      }, []), ret);
     }
 
     // recursive
     , rmap: function(callback, thisp, indexes) {
 
-      console.log(this,callback,thisp,indexes);
+      console.dir(this,callback,thisp,indexes);
 
+      // もうちょっと考えよう。
       function isCollection(arg) {
-        return (typeof arg.length !== 'undefined');
+        return (typeof arg.length === 'number' && 0 < arg.length);
       }
 
       if(!isCollection(this)) {
-        return callback.call(thisp || this, this, indexes, this);
+        return callback.call(thisp || this
+                             , this
+                             , indexes
+                             , this);
       } else {
         return this.map.call(this, function(val, idx){
-          this.rmap.call(Chainer.extend(val, this), callback, this, idx);
+          return this.rmap.call(Chainer.extend(val, this.empty())
+                         , callback
+                         , this
+                         , idx);
         }, this);
       }
 
