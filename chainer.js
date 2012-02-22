@@ -38,19 +38,12 @@ window.Chainer = (function() {
   Chainer.extend(Chainer, {
 
     /**
-     * 
-     */
-    isCollection: function(arg) {
-      return (typeof arg.length === 'number');
-    }
-
-    /**
      * Merge two arrays.
      *
      *     @param {Array} first First array to merge.
      *     @param {Array} second Second array to merge.
      */
-    , merge: function(first, second) {
+    merge: function(first, second) {
       // algorithm basing jQuery.merge
       var i = first.length,
       j = 0;
@@ -71,15 +64,8 @@ window.Chainer = (function() {
       return first;
     }
 
-    /**
-      * If given value is Array-like object, convert it to array,
-      * else return [ value ].
-      *
-      *     @param {Whatever} value
-      */
-    , makeArray: function(value) {
-      // algorithm basing jQuery.makeArray
-      var ret = [], class2type = {}, i
+    , isIteratable: function(obj) {
+      var class2type = {}, i, t
       , classes = "Boolean Number String Function Array Date RegExp Object".split(" ")
       ;
 
@@ -97,30 +83,40 @@ window.Chainer = (function() {
         return obj && typeof obj === "object" && "setInterval" in obj;
       }
 
-      if(value != null) {
-        var t = type(value);
+      t = type(obj);
 
-        if(value.length == null
-           || t === "string"
-           || t === "function"
-           || t === "regexp"
-           || isWindow(value)) {
+      return !(obj.length == null
+               || t === "string"
+               || t === "function"
+               || t === "regexp"
+               || isWindow(obj));
 
-          ret.push(value);
+    }
 
+    /**
+      * If given value is Array-like object, convert it to array,
+      * else return [ obj ].
+      *
+      *     @param {Whatever} obj
+      */
+    , makeArray: function(obj) {
+      // algorithm basing jQuery.makeArray
+      var ret = [];
+      if(!Chainer.isIteratable(obj)) {
+          ret.push(obj);
         } else {
-          Chainer.merge(ret, value);
+          Chainer.merge(ret, obj);
         }
-      }
-
       return ret;
     }
 
   });
 
   Chainer.extend(Chainer.prototype, {
+    chainer: '0.0.1'
+
     // start func
-    start: function(collection) {
+    , start: function(collection) {
       return Chainer.extend(
         Chainer.makeArray(collection)
         , this);
@@ -278,7 +274,7 @@ window.Chainer = (function() {
       if(!indexes) { indexes = []; }
       var tmp;
 
-      if(!Chainer.isCollection(this)) {
+      if(!this.chainer) {
         return callback.call(thisp || this
                              , this
                              , indexes
@@ -287,10 +283,12 @@ window.Chainer = (function() {
         return this.map.call(this, function(val, idx){
           tmp = Chainer.makeArray(indexes);
           tmp.push(idx);
-          return this.rmap.call(Chainer.extend(val, this.empty())
-                         , callback
-                         , this
-                         , tmp);
+          return this.rmap.call(Chainer.isIteratable(val)
+                                  ? Chainer.extend(val, this.empty())
+                                  : val
+                                , callback
+                                , this
+                                , tmp);
         }, this);
       }
     }
