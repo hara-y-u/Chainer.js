@@ -68,9 +68,16 @@ $(document).ready(function() {
 
   test('rmap', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([[1,2],[3,4,[5,6]]]).rmap(function(val, i) {return val+1;} ).makeArray(), [[2,3],[4,5,[6,7]]]);
+    deepEqual(ch.start([[1,2],[3,4,[5,6]],7,8]).rmap(function(val, i) { console.log(i); return val+1;} ).makeArray(), [[2,3],[4,5,[6,7]],8,9]);
   });
 
+  test('rfilter', function() {
+    var ch = new Chainer();
+    deepEqual(ch.start([[1,2],[3,4,[5,6]],7,8]).rfilter(function(val, i) {return !(val%2);} ).makeArray(), [[2],[4,[6]],8]);
+  });
+
+  test('', function() {
+  });
 
   module('Extending');
 

@@ -38,12 +38,19 @@ window.Chainer = (function() {
   Chainer.extend(Chainer, {
 
     /**
+     * 
+     */
+    isCollection: function(arg) {
+      return (typeof arg.length === 'number');
+    }
+
+    /**
      * Merge two arrays.
      *
      *     @param {Array} first First array to merge.
      *     @param {Array} second Second array to merge.
      */
-    merge: function(first, second) {
+    , merge: function(first, second) {
       // algorithm basing jQuery.merge
       var i = first.length,
       j = 0;
@@ -268,29 +275,60 @@ window.Chainer = (function() {
 
     // recursive
     , rmap: function(callback, thisp, indexes) {
+      if(!indexes) { indexes = []; }
+      var tmp;
 
-      console.dir(this,callback,thisp,indexes);
-
-      // もうちょっと考えよう。
-      function isCollection(arg) {
-        return (typeof arg.length === 'number' && 0 < arg.length);
-      }
-
-      if(!isCollection(this)) {
+      if(!Chainer.isCollection(this)) {
         return callback.call(thisp || this
                              , this
                              , indexes
                              , this);
       } else {
         return this.map.call(this, function(val, idx){
+          tmp = Chainer.makeArray(indexes);
+          tmp.push(idx);
           return this.rmap.call(Chainer.extend(val, this.empty())
                          , callback
                          , this
-                         , idx);
+                         , tmp);
         }, this);
       }
-
     }
+
+    // , rfilter: function(callback, thisp, indexes) {
+    //   var ret;
+
+    //   function mapFilter(callback) {
+    //     return this.map(function(val, idx) {
+    //       return callback.call(this, val, idx);
+    //     }).filter(function(val, idx) {
+    //       return (val !== undefined);
+    //     });
+    //   }
+
+    //   if(!Chainer.isCollection(this)) {
+    //     ret =  callback.call(thisp || this
+    //                          , this
+    //                          , indexes
+    //                          , this);
+    //     if(ret) {
+    //       // this works only for Numbers
+    //       return parseInt(this.toString(), 10);
+    //     } else {
+    //       return undefined;
+    //     }
+    //   } else {
+    //     return mapFilter.call(this, function(val, idx){
+    //       return this.rfilter.call(Chainer.extend(val, this.empty())
+    //                      , callback
+    //                      , this
+    //                      , idx);
+    //     }, this);
+    //   }
+    // }
+    , rfilter: function(callback, thisp, indexes) {
+    }
+
   });
 
   return Chainer;
