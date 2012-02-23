@@ -61,6 +61,9 @@ $(document).ready(function() {
     deepEqual(ch.init([[1,2],[3,4],[5,6]]).flatten().makeArray(), [1,2,3,4,5,6]);
   });
 
+
+  module('Recursive Methods');
+
   test('reach', function() {
     var ch = new Chainer();
     deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).reach(function(v, i) { console.log(v,i); return v+1;} ).makeArray(), [[1,2],[3,4,[5,6]],7,8]);
@@ -80,6 +83,7 @@ $(document).ready(function() {
 
   test('', function() {
   });
+
 
   module('Extending');
 
