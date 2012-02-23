@@ -115,11 +115,11 @@ window.Chainer = (function() {
   Chainer.extend(Chainer.prototype, {
     chainer: '0.0.1'
 
-    // start func
-    , start: function(collection) {
+    // init func
+    , init: function(collection) {
       return Chainer.extend(
         Chainer.makeArray(collection)
-        , this);
+        , this.empty());
     }
 
     , clone: function() {
@@ -264,67 +264,57 @@ window.Chainer = (function() {
 
     , flatten: function() {
       var ret = this.empty();
-      return Chainer.extend(this.reduce(function(prev, curr, i) {
+      return this.init(this.reduce(function(prev, curr, i) {
         return Chainer.merge(prev, curr);
-      }, []), ret);
+      }, []));
     }
 
     // recursive
-    , rmap: function(callback, thisp, indexes) {
-      if(!indexes) { indexes = []; }
-      var tmp;
+    , rmap: function(callback, thisp) {
+      var that = this
+      ;
+      return (function _rmap(obj, callback, indexes) {
+        if(!indexes) { indexes = []; }
+        var tmp;
 
-      if(!this.chainer) {
-        return callback.call(thisp || this
-                             , this
-                             , indexes
-                             , this);
-      } else {
-        return this.map.call(this, function(val, idx){
-          tmp = Chainer.makeArray(indexes);
-          tmp.push(idx);
-          return this.rmap.call(Chainer.isIteratable(val)
-                                  ? Chainer.extend(val, this.empty())
-                                  : val
-                                , callback
-                                , this
-                                , tmp);
-        }, this);
-      }
+        if(!Chainer.isIteratable(obj)) {
+          return callback.call(thisp || that
+                               , obj
+                               , indexes
+                               , that.makeArray());
+        } else {
+          return that.init(obj).map(function(val, idx){
+            tmp = Chainer.makeArray(indexes);
+            tmp.push(idx);
+            return _rmap(val, callback, tmp);
+          });
+        }
+      }(this.makeArray(), callback));
     }
 
-    // , rfilter: function(callback, thisp, indexes) {
-    //   var ret;
-
-    //   function mapFilter(callback) {
-    //     return this.map(function(val, idx) {
-    //       return callback.call(this, val, idx);
-    //     }).filter(function(val, idx) {
-    //       return (val !== undefined);
-    //     });
-    //   }
-
-    //   if(!Chainer.isCollection(this)) {
-    //     ret =  callback.call(thisp || this
-    //                          , this
-    //                          , indexes
-    //                          , this);
-    //     if(ret) {
-    //       // this works only for Numbers
-    //       return parseInt(this.toString(), 10);
-    //     } else {
-    //       return undefined;
-    //     }
-    //   } else {
-    //     return mapFilter.call(this, function(val, idx){
-    //       return this.rfilter.call(Chainer.extend(val, this.empty())
-    //                      , callback
-    //                      , this
-    //                      , idx);
-    //     }, this);
-    //   }
-    // }
-    , rfilter: function(callback, thisp, indexes) {
+    , rfilter: function(callback, thisp) {
+      var that = this
+      ;
+      return (function _rfilter(obj, callback, indexes) {
+        var ret, tmp
+        ;
+        if(!indexes) { indexes = []; }
+        if(!Chainer.isIteratable(obj)) {
+          return callback.call(thisp || that
+                               , obj
+                               , indexes
+                               , that.makeArray());
+        } else {
+          return that.init(
+            that.init(obj).reduce(function(prev, curr, idx){
+              tmp = Chainer.makeArray(indexes);
+              tmp.push(idx);
+              ret = _rfilter(curr, callback, tmp);
+              if(ret) { prev.push(Chainer.isIteratable(curr) ? ret : curr); }
+              return prev;
+            }, []));
+        }
+      }(this.makeArray(), callback));
     }
 
   });

@@ -24,56 +24,58 @@ $(document).ready(function() {
 
   test('map', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([1,2,3,4]).map(function(v,i) { return v + i; }).makeArray(), [1,3,5,7]);
+    deepEqual(ch.init([1,2,3,4]).map(function(v,i) { return v + i; }).makeArray(), [1,3,5,7]);
   });
 
   test('filter', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([1,2,3,4]).filter(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
+    deepEqual(ch.init([1,2,3,4]).filter(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
   });
 
   test('select', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([1,2,3,4]).select(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
+    deepEqual(ch.init([1,2,3,4]).select(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
   });
 
   test('reduce', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([1,2,3,4]).reduce(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
-    deepEqual(ch.start([4,5,6,7]).reduce(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
+    deepEqual(ch.init([1,2,3,4]).reduce(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
+    deepEqual(ch.init([4,5,6,7]).reduce(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
   });
 
   test('reduceRight', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([1,2,3,4]).reduceRight(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
-    deepEqual(ch.start([4,5,6,7]).reduceRight(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
+    deepEqual(ch.init([1,2,3,4]).reduceRight(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
+    deepEqual(ch.init([4,5,6,7]).reduceRight(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
   });
 
   test('every', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([true, true, true]).every(function(val, i) { return val; }), true, 'true');
-    deepEqual(ch.start([true, true, false]).every(function(val, i) { return val; }), false, 'false');
+    deepEqual(ch.init([true, true, true]).every(function(val, i) { return val; }), true, 'true');
+    deepEqual(ch.init([true, true, false]).every(function(val, i) { return val; }), false, 'false');
   });
 
   test('some', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([true, false, false]).some(function(val, i) { return val; }), true, 'true');
-    deepEqual(ch.start([false, false, false]).some(function(val, i) { return val; }), false, 'false');
+    deepEqual(ch.init([true, false, false]).some(function(val, i) { return val; }), true, 'true');
+    deepEqual(ch.init([false, false, false]).some(function(val, i) { return val; }), false, 'false');
   });
 
   test('flatten', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([[1,2],[3,4],[5,6]]).flatten().makeArray(), [1,2,3,4,5,6]);
+    deepEqual(ch.init([[1,2],[3,4],[5,6]]).flatten().makeArray(), [1,2,3,4,5,6]);
   });
 
   test('rmap', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([[1,2],[3,4,[5,6]],7,8]).rmap(function(val, i) { console.log(i); return val+1;} ).makeArray(), [[2,3],[4,5,[6,7]],8,9]);
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rmap(function(val, i) { return val+1;} ).makeArray(), [[2,3],[4,5,[6,7]],8,9]);
+    deepEqual(ch.init(['abc', 'def', ['abc', 'def']]).rmap(function(v, i){ return 'abc' === v; }), [true, false,[true, false]], 'Supports "===" operator correctly.');
   });
 
   test('rfilter', function() {
     var ch = new Chainer();
-    deepEqual(ch.start([[1,2],[3,4,[5,6]],7,8]).rfilter(function(val, i) {return !(val%2);} ).makeArray(), [[2],[4,[6]],8]);
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rfilter(function(val, i) {return !(val%2);} ).makeArray(), [[2],[4,[6]],8]);
+    deepEqual(ch.init(['abc', 'def', ['abc', 'def']]).rfilter(function(v, i){ return 'abc' === v; }), ['abc', ['abc']], 'Supports "===" operator correctly.');
   });
 
   test('', function() {
@@ -90,7 +92,7 @@ $(document).ready(function() {
       });
     };
 
-    deepEqual(ch.start([1,2,3,4]).pp().pp(), [3,4,5,6], 'basic extending');
+    deepEqual(ch.init([1,2,3,4]).pp().pp(), [3,4,5,6], 'basic extending');
   });
 
 
@@ -108,7 +110,7 @@ $(document).ready(function() {
     };
 
     var ch = new MyChainer();
-    deepEqual(ch.start([1,2,3,4]).pp().pp(), [3,4,5,6], 'basic inheritance');
+    deepEqual(ch.init([1,2,3,4]).pp().pp(), [3,4,5,6], 'basic inheritance');
   });
 
 });
