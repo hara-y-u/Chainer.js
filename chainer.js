@@ -204,10 +204,6 @@ window.Chainer = (function() {
       return ret;
     }
 
-    , select: function(callback, thisp) {
-      return this.filter(callback, thisp);
-    }
-
     , reduce: function(callback, initial) {
       var ret = initial || this.shift()
       ;
@@ -270,6 +266,28 @@ window.Chainer = (function() {
     }
 
     // recursive
+    , reach: function(callback, thisp) {
+      var that = this
+      ;
+      return (function _reach(obj, callback, indexes) {
+        if(!indexes) { indexes = []; }
+        var tmp;
+
+        if(!Chainer.isIteratable(obj)) {
+          return callback.call(thisp || that
+                               , obj
+                               , indexes
+                               , that.makeArray());
+        } else {
+          return that.init(obj).each(function(val, idx){
+            tmp = Chainer.makeArray(indexes);
+            tmp.push(idx);
+            return _reach(val, callback, tmp);
+          });
+        }
+      }(this.makeArray(), callback));
+    }
+
     , rmap: function(callback, thisp) {
       var that = this
       ;
