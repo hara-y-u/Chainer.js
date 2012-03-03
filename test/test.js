@@ -4,6 +4,18 @@ $(document).ready(function() {
 
   module('Core');
 
+  test('Chainer.isIteratable', function() {
+    equal(Chainer.isIteratable([1, 2, 3]), true, 'Plain Array should be iteratable.');
+    equal(Chainer.isIteratable([]), true, 'Array with no elements should be iteratable.');
+    equal(Chainer.isIteratable(document.getElementsByTagName('div')), true, 'HTML Elements Collection should be iteratable.');
+    equal(Chainer.isIteratable($('div')), true, 'jQuery Collection should be iteratable.');
+    equal(Chainer.isIteratable('foo'), false, 'String objoct should not be iteratable.');
+    equal(Chainer.isIteratable(/^\w*$/), false, 'RegExp objoct should not be iteratable.');
+    equal(Chainer.isIteratable(window), false, 'Object window should not be iteratable.');
+    equal(Chainer.isIteratable(function(){}), false, 'Funciton objoct should not be iteratable.');
+    equal(Chainer.isIteratable(123), false, 'Number objoct should not be iteratable.');
+  });
+
   test('Chainer.extend', function() {
     var base = { foo:1, bar:2, baz:3}, ext = { foo:4, bar:5 };
 
@@ -81,7 +93,10 @@ $(document).ready(function() {
     deepEqual(ch.init(['abc', 'def', ['abc', 'def']]).rfilter(function(v, i){ return 'abc' === v; }), ['abc', ['abc']], 'Supports "===" operator correctly.');
   });
 
-  test('', function() {
+  test('rreduce', function() {
+    var ch = new Chainer();
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rreduce(function(prev, curr, i) { return prev + curr;}), 36);
+   // deepEqual(ch.init(['abc', 'def', ['abc', 'def']]).rmap(function(v, i){ return 'abc' === v; }), [true, false,[true, false]], 'Supports "===" operator correctly.');
   });
 
 
@@ -96,7 +111,14 @@ $(document).ready(function() {
       });
     };
 
+    ch.rpp = function() {
+      return this.rmap(function(v) {
+        return v + 1;
+      });
+    };
+
     deepEqual(ch.init([1,2,3,4]).pp().pp(), [3,4,5,6], 'basic extending');
+    deepEqual(ch.init([1,[2,3],4]).rpp().rpp(), [3,[4,5],6], 'basic extending');
   });
 
 
@@ -113,8 +135,15 @@ $(document).ready(function() {
       });
     };
 
+    MyChainer.prototype.rpp = function() {
+      return this.rmap(function(v) {
+        return v + 1;
+      });
+    };
+
     var ch = new MyChainer();
     deepEqual(ch.init([1,2,3,4]).pp().pp(), [3,4,5,6], 'basic inheritance');
+    deepEqual(ch.init([1,[2,[3]],4]).rpp().rpp(), [3,[4,[5]],6], 'basic inheritance');
   });
 
 });
