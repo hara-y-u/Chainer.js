@@ -275,7 +275,6 @@ window.Chainer = (function(undefined) {
     }
 
     , flatten: function() {
-      var ret = this.empty();
       return this.init(this.reduce(function(prev, curr, i) {
         return Chainer.merge(prev, curr);
       }, []));
@@ -367,6 +366,14 @@ window.Chainer = (function(undefined) {
       });
 
       return ret;
+    }
+
+    , rflatten: function() {
+      var ret = this.empty();
+      return this.rreduce(function(prev, curr, i) {
+        prev.push(curr);
+        return prev;
+      }, ret);
     }
 
   });

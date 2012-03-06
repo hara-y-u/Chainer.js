@@ -99,8 +99,12 @@ $(document).ready(function() {
   });
 
   test('rreduce', function() {
-    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rreduce(function(prev, curr, i) { return prev + curr;}), 36, "Initial value not supplied.");
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rreduce(function(prev, curr, i) { return prev + curr;}), 36, "No initial value supplied.");
     deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rreduce(function(prev, curr, i) { return prev + curr;}, 5), 41, "Initial value supplied.");
+  });
+
+  test('rflatten', function() {
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rflatten().makeArray(), [1,2,3,4,5,6,7,8]);
   });
 
 
