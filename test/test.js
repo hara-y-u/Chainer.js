@@ -2,13 +2,20 @@
 
 $(document).ready(function() {
 
-  module('Core');
+  var ch
+  ;
+  module('Core', {
+    setup: function() {
+      ch = new Chainer();
+    }
+  });
 
   test('Chainer.isIteratable', function() {
     equal(Chainer.isIteratable([1, 2, 3]), true, 'Plain Array should be iteratable.');
     equal(Chainer.isIteratable([]), true, 'Array with no elements should be iteratable.');
     equal(Chainer.isIteratable(document.getElementsByTagName('div')), true, 'HTML Elements Collection should be iteratable.');
     equal(Chainer.isIteratable($('div')), true, 'jQuery Collection should be iteratable.');
+    equal(Chainer.isIteratable({}), false, 'Plain object should not be iteratable.');
     equal(Chainer.isIteratable('foo'), false, 'String objoct should not be iteratable.');
     equal(Chainer.isIteratable(/^\w*$/), false, 'RegExp objoct should not be iteratable.');
     equal(Chainer.isIteratable(window), false, 'Object window should not be iteratable.');
@@ -32,71 +39,68 @@ $(document).ready(function() {
   });
 
 
-  module('Basic Methods');
+  module('Basic Methods', {
+    setup: function() {
+      ch = new Chainer();
+    }
+  });
 
   test('map', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([1,2,3,4]).map(function(v,i) { return v + i; }).makeArray(), [1,3,5,7]);
   });
 
   test('filter', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([1,2,3,4]).filter(function(v,i) { return !(v%2); }).makeArray(), [2,4]);
   });
 
   test('reduce', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([1,2,3,4]).reduce(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
     deepEqual(ch.init([4,5,6,7]).reduce(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
   });
 
   test('reduceRight', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([1,2,3,4]).reduceRight(function(prev, curr, i) { return prev + curr; }), 10, 'no initial value');
     deepEqual(ch.init([4,5,6,7]).reduceRight(function(prev, curr, i) { return prev + curr; }, 3), 25, 'initial value supplied');
   });
 
   test('every', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([true, true, true]).every(function(val, i) { return val; }), true, 'true');
     deepEqual(ch.init([true, true, false]).every(function(val, i) { return val; }), false, 'false');
   });
 
   test('some', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([true, false, false]).some(function(val, i) { return val; }), true, 'true');
     deepEqual(ch.init([false, false, false]).some(function(val, i) { return val; }), false, 'false');
   });
 
   test('flatten', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([[1,2],[3,4],[5,6]]).flatten().makeArray(), [1,2,3,4,5,6]);
   });
 
 
-  module('Recursive Methods');
+  module('Recursive Methods', {
+    setup: function() {
+      ch = new Chainer();
+    }
+  });
 
   test('reach', function() {
-    var ch = new Chainer();
-    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).reach(function(v, i) { console.log(v,i); return v+1;} ).makeArray(), [[1,2],[3,4,[5,6]],7,8]);
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).reach(function(v, i) { return v+1;} ).makeArray(), [[1,2],[3,4,[5,6]],7,8]);
   });
 
   test('rmap', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rmap(function(val, i) { return val+1;} ).makeArray(), [[2,3],[4,5,[6,7]],8,9]);
     deepEqual(ch.init(['abc', 'def', ['abc', 'def']]).rmap(function(v, i){ return 'abc' === v; }), [true, false,[true, false]], 'Supports "===" operator correctly.');
   });
 
   test('rfilter', function() {
-    var ch = new Chainer();
     deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rfilter(function(val, i) {return !(val%2);} ).makeArray(), [[2],[4,[6]],8]);
     deepEqual(ch.init(['abc', 'def', ['abc', 'def']]).rfilter(function(v, i){ return 'abc' === v; }), ['abc', ['abc']], 'Supports "===" operator correctly.');
   });
 
   test('rreduce', function() {
-    var ch = new Chainer();
-    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rreduce(function(prev, curr, i) { return prev + curr;}), 36);
-   // deepEqual(ch.init(['abc', 'def', ['abc', 'def']]).rmap(function(v, i){ return 'abc' === v; }), [true, false,[true, false]], 'Supports "===" operator correctly.');
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rreduce(function(prev, curr, i) { return prev + curr;}), 36, "Initial value not supplied.");
+    deepEqual(ch.init([[1,2],[3,4,[5,6]],7,8]).rreduce(function(prev, curr, i) { return prev + curr;}, 5), 41, "Initial value supplied.");
   });
 
 

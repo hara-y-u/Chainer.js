@@ -2,7 +2,7 @@
  * Chainer.js - Collection Processing with Chain Methods
  *  * License: [MIT](http://www.opensource.org/licenses/mit-license)
  */
-window.Chainer = (function() {
+window.Chainer = (function(undefined) {
 
   function Chainer() {}
 
@@ -205,9 +205,17 @@ window.Chainer = (function() {
     }
 
     , reduce: function(callback, initial) {
-      var ret = initial || this.shift()
-      ;
+      var ret;
+
       this.each(function(val, idx, arr) {
+        if(ret === undefined) {
+          if(initial === undefined) {
+            ret = val;
+            return;
+          } else {
+            ret = initial;
+          }
+        } 
         ret = callback(ret, val, idx, arr);
       });
 
@@ -215,11 +223,19 @@ window.Chainer = (function() {
     }
 
     , reduceRight: function(callback, initial) {
-      var ret = initial || this.pop()
+      var ret
       , arr = this.makeArray()
       , l = this.length
       ;
       while(l--) {
+        if(ret === undefined) {
+          if(initial === undefined) {
+            ret = this[l];
+            continue;
+          } else {
+            ret = initial;
+          }
+        } 
         ret = callback(ret, this[l], l, arr);
       }
 
@@ -333,6 +349,24 @@ window.Chainer = (function() {
             }, []));
         }
       }(this.makeArray(), callback));
+    }
+
+    , rreduce: function(callback, initial) {
+      var ret;
+
+      this.reach(function(val, idx, arr) {
+        if(ret === undefined) {
+          if(initial === undefined) {
+            ret = val;
+            return;
+          } else {
+            ret = initial;
+          }
+        } 
+        ret = callback(ret, val, idx, arr);
+      });
+
+      return ret;
     }
 
   });
