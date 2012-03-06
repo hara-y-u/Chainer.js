@@ -4,6 +4,8 @@
  */
 window.Chainer = (function(undefined) {
 
+  var VERSION = "0.0.1";
+
   function Chainer() {}
 
   /**
@@ -113,7 +115,7 @@ window.Chainer = (function(undefined) {
   });
 
   Chainer.extend(Chainer.prototype, {
-    chainer: '0.0.1'
+    chainer: VERSION
 
     // init func
     , init: function(collection) {
